@@ -11,6 +11,8 @@ class Queue
 
         virtual ElementType dequeue() = 0;
 
+        virtual ElementType* peek() = 0;
+
         virtual bool isEmpty() const = 0;
 
         virtual bool hasData() const = 0;
@@ -33,6 +35,8 @@ class StaticQueue : public Queue<ElementType>
         void enqueue(const ElementType& element);
 
         ElementType dequeue();
+
+        ElementType* peek();
 
         bool isEmpty() const;
 

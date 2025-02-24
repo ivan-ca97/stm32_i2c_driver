@@ -3,7 +3,7 @@ This repository contains C++ object oriented drivers for the stm32f401ccu6 MCU.
 # Requisitos
 ## Excepciones
 1. Ver que todas las banderas -fno-exceptions estan deshabilitadas
-2. Cambiar `--specs=nano.specs` por `--specs=nosys.specs` en `gcc-arm-none-eabi.cmake`s
+2. Cambiar  `--specs=nano.specs` por `--specs=nosys.specs` en `gcc-arm-none-eabi.cmake`s
 
 # TODO:
 ## General
@@ -15,4 +15,4 @@ This repository contains C++ object oriented drivers for the stm32f401ccu6 MCU.
 4. Destructor (resregistrar el drvier y demás)
 5. DeInit de GPIO y NVIC
 6. Ver que pasa con los Devices si hago deinit del bus (tendria que pasar el bus a nullptr en cada device asociado)
-7. Hacer cada uno de los callbacks adecuados para I2C  
+7. Hacer cada uno de los callbacks adecuados para I2C.

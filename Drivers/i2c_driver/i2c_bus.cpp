@@ -21,23 +21,25 @@ void I2cBus::transactionCompleteCallback(I2C_HandleTypeDef *handle)
     I2cBus* bus = reinterpret_cast<I2cBus*>(
         reinterpret_cast<uint8_t*>(handle) - offsetof(I2cBus, handle)
     );
-    
-    // Calls the post-transaction callback once it's complete.
-    bus->currentTransaction.postCallback();
+
+    // Dequeues and calls the post-transaction callback once it's complete.
+    I2cTransaction transaction = bus->queue->dequeue();
+    transaction.postCallback();    
 
     bus->sendNextTransaction();
 }
 
 void I2cBus::sendNextTransaction(void)
 {
-    if(queue->hasData())
-    {        
-        currentTransaction = queue->dequeue();
-
-        currentTransaction.preCallback();
-
-        sendTransaction(currentTransaction);
+    currentTransaction = queue->peek();
+    if(!currentTransaction)
+    {
+        return;
     }
+
+    currentTransaction->preCallback();
+
+    sendTransaction(*currentTransaction);
 }
 
 void I2cBus::sendTransaction(I2cTransaction &transaction)

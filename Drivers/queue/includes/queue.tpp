@@ -15,14 +15,27 @@ void StaticQueue<ElementType, BufferSize>::enqueue(const ElementType& element)
 template <typename ElementType, size_t BufferSize>
 ElementType StaticQueue<ElementType, BufferSize>::dequeue()
 {
-    if (isEmpty())
+    if(isEmpty())
     {
         throw std::underflow_error("Queue is empty");
     }
-    ElementType element = buffer[front];
+
+    size_t position = front;
     front = (front + 1) % BufferSize;
     --count;
-    return element;
+
+    return buffer[position];
+}
+
+template <typename ElementType, size_t BufferSize>
+ElementType* StaticQueue<ElementType, BufferSize>::peek()
+{
+    if(isEmpty())
+    {
+        return nullptr;
+    }
+
+    return &buffer[front];
 }
 
 template <typename ElementType, size_t BufferSize>

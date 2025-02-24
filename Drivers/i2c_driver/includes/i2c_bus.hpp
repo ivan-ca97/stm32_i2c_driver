@@ -58,7 +58,7 @@ class I2cBus
 
         Queue<I2cTransaction> *queue;
 
-        I2cTransaction currentTransaction;
+        I2cTransaction* currentTransaction;
 
         I2C_HandleTypeDef handle = {};
 
