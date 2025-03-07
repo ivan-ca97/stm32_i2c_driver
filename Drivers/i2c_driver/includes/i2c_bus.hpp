@@ -127,6 +127,8 @@ class I2cBus
 
         static void transactionCompleteCallback(I2C_HandleTypeDef *handle);
 
+        static void transactionErrorCallback(I2C_HandleTypeDef *handle);
+
     public:
         I2C_HandleTypeDef* getHandle(void);
         I2cBus(

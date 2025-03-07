@@ -20,7 +20,7 @@ typedef enum
     REGISTER_16_BITS
 }
 RegisterLength;
- 
+
 class I2cTransaction
 {
     protected:
@@ -34,8 +34,10 @@ class I2cTransaction
 
         void* preCallbackParameters = nullptr;
         void* postCallbackParameters = nullptr;
+        void* errorCallbackParameters = nullptr;
         Callback preCallbackFunction = nullptr;
         Callback postCallbackFunction = nullptr;
+        Callback errorCallbackFunction = nullptr;
 
     public:
         I2cTransaction();
@@ -43,38 +45,45 @@ class I2cTransaction
         static I2cTransaction I2cTxTransaction(I2cDevice *device, uint8_t* data, uint16_t dataBytes, uint16_t deviceRegister = 0, RegisterLength deviceRegisterBytes = REGISTER_NULL);
 
         static I2cTransaction I2cRxTransaction(I2cDevice *device, uint8_t* data, uint16_t dataBytes, uint16_t deviceRegister = 0, RegisterLength deviceRegisterBytes = REGISTER_NULL);
-    
+
         I2cTransaction(TransactionDirection direction, uint8_t* data, uint16_t dataBytes, I2cDevice *device, uint16_t address, uint16_t deviceRegister = 0, RegisterLength deviceRegisterBytes = REGISTER_NULL);
 
         I2cTransaction(TransactionDirection direction, uint8_t* data, uint16_t dataBytes, uint16_t address, uint16_t deviceRegister = 0, RegisterLength deviceRegisterBytes = REGISTER_NULL);
-    
+
         I2cTransaction(TransactionDirection direction, uint8_t* data, uint16_t dataBytes, I2cDevice *device, uint16_t deviceRegister = 0, RegisterLength deviceRegisterBytes = REGISTER_NULL);
 
         void setPreCallback(Callback callback, void* parameters);
 
         void setPostCallback(Callback callback, void* parameters);
 
+        void setErrorCallback(Callback callback, void* parameters);
+
         uint16_t getAddress(void);
 
         uint8_t* getDataPointer(void);
 
         uint16_t getDataLenthBytes(void);
-        
+
         uint16_t getRegister(void);
-        
+
         RegisterLength getRegisterBytes(void);
 
         TransactionDirection getDirection();
 
         /*
-         *  @brief Calls the pre-transaction callback before the transaction is set with the configured parameters.
+         *  @brief Calls the pre-transaction callback before the transaction is set, with the configured parameters.
          */
         void preCallback(void);
-    
+
         /*
-         *  @brief Calls the post-transaction callback after the transaction is finished with the configured parameters.
+         *  @brief Calls the post-transaction callback after the transaction is finished, with the configured parameters.
          */
         void postCallback(void);
+
+        /*
+         *  @brief Calls the transaction error callback after the transaction fails, with the configured parameters.
+         */
+        void errorCallback(void);
 
         void send(void);
 };

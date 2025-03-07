@@ -50,6 +50,12 @@ void I2cTransaction::setPostCallback(Callback callback, void* parameters)
     postCallbackParameters = parameters;
 }
 
+void I2cTransaction::setErrorCallback(Callback callback, void* parameters)
+{
+    errorCallbackFunction = callback;
+    errorCallbackParameters = parameters;
+}
+
 uint16_t I2cTransaction::getAddress(void)
 {
     return address;
@@ -98,4 +104,10 @@ void I2cTransaction::postCallback()
 {
     if(postCallbackFunction)
         postCallbackFunction(postCallbackParameters);
+}
+
+void I2cTransaction::errorCallback()
+{
+    if(errorCallbackFunction)
+        errorCallbackFunction(errorCallbackParameters);
 }

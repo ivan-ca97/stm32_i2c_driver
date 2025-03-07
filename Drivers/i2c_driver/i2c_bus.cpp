@@ -15,6 +15,20 @@ I2C_HandleTypeDef* I2cBus::getHandle(void)
     return &handle;
 }
 
+void I2cBus::transactionErrorCallback(I2C_HandleTypeDef *handle)
+{
+    // Get the bus object
+    I2cBus* bus = reinterpret_cast<I2cBus*>(
+        reinterpret_cast<uint8_t*>(handle) - offsetof(I2cBus, handle)
+    );
+
+    // Dequeues and calls the post-transaction callback once it's complete.
+    I2cTransaction transaction = bus->queue->dequeue();
+    transaction.errorCallback();
+
+    bus->sendNextTransaction();
+}
+
 void I2cBus::transactionCompleteCallback(I2C_HandleTypeDef *handle)
 {
     // Get the bus object
@@ -24,7 +38,7 @@ void I2cBus::transactionCompleteCallback(I2C_HandleTypeDef *handle)
 
     // Dequeues and calls the post-transaction callback once it's complete.
     I2cTransaction transaction = bus->queue->dequeue();
-    transaction.postCallback();    
+    transaction.postCallback();
 
     bus->sendNextTransaction();
 }
@@ -214,7 +228,7 @@ void I2cBus::registerDriver(I2cBusSelection bus)
         default:
             throw I2cException();
     }
-    
+
     if(drivers[i] != nullptr)
         throw I2cException("Bus already in use");
 
@@ -263,7 +277,7 @@ void I2cBus::initHandle(
     handle.Init.OwnAddress2 = ownAddress2;
 
     handle.MspInitCallback = nullptr;
-    
+
     if(HAL_I2C_Init(&handle) != HAL_OK)
     {
         throw I2cException("There was an error initializing the I2C driver.");
@@ -295,17 +309,12 @@ void I2cBus::registerCallbacks(void)
         throw I2cException("There was an error registering the callback.");
     }
 
-    if(HAL_I2C_RegisterCallback(&handle, HAL_I2C_MASTER_RX_COMPLETE_CB_ID, transactionCompleteCallback) != HAL_OK)
+    if(HAL_I2C_RegisterCallback(&handle, HAL_I2C_ERROR_CB_ID, transactionErrorCallback) != HAL_OK)
     {
         throw I2cException("There was an error registering the callback.");
     }
 
-    // if(HAL_I2C_RegisterCallback(&handle, HAL_I2C_ERROR_CB_ID, transactionCompleteCallback) != HAL_OK)
-    // {
-    //     throw I2cException("There was an error registering the callback.");
-    // }
-
-    if(HAL_I2C_RegisterCallback(&handle, HAL_I2C_ABORT_CB_ID, transactionCompleteCallback) != HAL_OK)
+    if(HAL_I2C_RegisterCallback(&handle, HAL_I2C_ABORT_CB_ID, transactionErrorCallback) != HAL_OK)
     {
         throw I2cException("There was an error registering the callback.");
     }

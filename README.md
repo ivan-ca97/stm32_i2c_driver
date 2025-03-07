@@ -16,3 +16,4 @@ This repository contains C++ object oriented drivers for the stm32f401ccu6 MCU.
 5. DeInit de GPIO y NVIC
 6. Ver que pasa con los Devices si hago deinit del bus (tendria que pasar el bus a nullptr en cada device asociado)
 7. Hacer cada uno de los callbacks adecuados para I2C.
+8. Que pasa si no puedo enviar transacción luego de terminar otra? Poner timer para volver a intentar?
