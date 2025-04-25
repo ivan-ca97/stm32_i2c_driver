@@ -19,4 +19,6 @@ class I2cDevice
         void detachBus();
 
         void setTransaction(I2cTransaction &transaction);
+
+        void operator<<(I2cTransaction& transaction);
 };
